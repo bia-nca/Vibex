@@ -72,13 +72,9 @@ public class SoundActivity extends AppCompatActivity {
             try {
 
                 URL url = new URL(urlString);
-
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
                 in = new BufferedInputStream(urlConnection.getInputStream());
-
                 String parsedResult = convertInputStreamToString(in);
-
                 Log.d("PARSED", parsedResult);
 
                 startMediaPlayer();
@@ -86,7 +82,6 @@ public class SoundActivity extends AppCompatActivity {
             } catch (Exception e ) {
 
                 System.out.println(e.getMessage());
-
                 return e.getMessage();
 
             }
