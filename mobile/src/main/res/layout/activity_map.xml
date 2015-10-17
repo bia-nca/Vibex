@@ -13,6 +13,15 @@
     android:orientation="vertical"
         android:weightSum="1">
 
+        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:background="@color/colorGrey" app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:navigationIcon="@drawable/logo"
+            app:contentInsetEnd="@dimen/activity_horizontal_margin"
+            app:contentInsetStart="@dimen/activity_horizontal_margin"
+            />
+
+
         <!-- Map Fragment embedded with the map object -->
     <fragment
         class="com.here.android.mpa.mapping.MapFragment"
