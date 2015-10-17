@@ -1,6 +1,7 @@
 package de.girlsgeek.vibex;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
@@ -8,12 +9,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import android.widget.MediaController.MediaPlayerControl;
 
-public class MainActivity extends WearableActivity implements MediaPlayerControl {
+public class MainActivity extends WearableActivity {
 
     private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
@@ -22,7 +30,9 @@ public class MainActivity extends WearableActivity implements MediaPlayerControl
     private TextView mTextView;
     private TextView mClockView;
 
-    private MusicController controller;
+    String clientId = "0b0263b59a2c75be631fecf6c8c95dd1";
+    String city = "berlin";
+    int limit = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,10 @@ public class MainActivity extends WearableActivity implements MediaPlayerControl
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         mTextView = (TextView) findViewById(R.id.text);
         mClockView = (TextView) findViewById(R.id.clock);
+
+        String soundCloudURL = "http://api.soundcloud.com/users?q=" + city + "&limit=" + limit + "&client_id=" + clientId;
+
+        new CallAPI().execute(soundCloudURL);
 
     }
 
@@ -68,78 +82,53 @@ public class MainActivity extends WearableActivity implements MediaPlayerControl
         }
     }
 
-    private void setController(){
-        //set up the controller
-        Log.d("TAG", "Try to set controller");
-        controller = new MusicController(this);
-        controller.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    private class CallAPI extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String urlString=params[0]; // URL to call
+            String resultToDisplay = "";
+            InputStream in = null;
+
+            // HTTP Get
+            try {
+
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                in = new BufferedInputStream(urlConnection.getInputStream());
+                String parsedResult = convertInputStreamToString(in);
+                Log.d("PARSED", parsedResult);
+
+            } catch (Exception e ) {
+
+                System.out.println(e.getMessage());
+                return e.getMessage();
 
             }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.text));
-        controller.setEnabled(true);
-    }
+            return resultToDisplay;
+        }
 
-    @Override
-    public void start() {
+        protected void onPostExecute(String result) {
+            Log.d("RESULT", result);
+        }
 
-    }
 
-    @Override
-    public void pause() {
 
-    }
+    } // end CallAPI
 
-    @Override
-    public int getDuration() {
-        return 0;
-    }
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
 
-    @Override
-    public int getCurrentPosition() {
-        return 0;
-    }
-
-    @Override
-    public void seekTo(int pos) {
+        inputStream.close();
+        return result;
 
     }
 
-    @Override
-    public boolean isPlaying() {
-        return false;
-    }
 
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public boolean canPause() {
-        return false;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return false;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return false;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return 0;
-    }
 }
