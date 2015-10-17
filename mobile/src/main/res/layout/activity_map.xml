@@ -21,7 +21,6 @@
             app:contentInsetStart="@dimen/activity_horizontal_margin"
             />
 
-
         <!-- Map Fragment embedded with the map object -->
     <fragment
         class="com.here.android.mpa.mapping.MapFragment"
@@ -50,7 +49,6 @@
                 android:background="@drawable/potsdam_sanssouci_small"
                 android:adjustViewBounds="false" />
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>
