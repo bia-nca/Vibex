@@ -1,14 +1,25 @@
 package de.girlsgeek.vibex;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.widget.MediaController.MediaPlayerControl;
 
 public class MainActivity extends WearableActivity {
 
@@ -19,6 +30,10 @@ public class MainActivity extends WearableActivity {
     private TextView mTextView;
     private TextView mClockView;
 
+    String clientId = "0b0263b59a2c75be631fecf6c8c95dd1";
+    String city = "berlin";
+    int limit = 20;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +43,11 @@ public class MainActivity extends WearableActivity {
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
         mTextView = (TextView) findViewById(R.id.text);
         mClockView = (TextView) findViewById(R.id.clock);
+
+        String soundCloudURL = "http://api.soundcloud.com/users?q=" + city + "&limit=" + limit + "&client_id=" + clientId;
+
+        new CallAPI().execute(soundCloudURL);
+
     }
 
     @Override
@@ -61,4 +81,54 @@ public class MainActivity extends WearableActivity {
             mClockView.setVisibility(View.GONE);
         }
     }
+
+    private class CallAPI extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String urlString=params[0]; // URL to call
+            String resultToDisplay = "";
+            InputStream in = null;
+
+            // HTTP Get
+            try {
+
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                in = new BufferedInputStream(urlConnection.getInputStream());
+                String parsedResult = convertInputStreamToString(in);
+                Log.d("PARSED", parsedResult);
+
+            } catch (Exception e ) {
+
+                System.out.println(e.getMessage());
+                return e.getMessage();
+
+            }
+
+            return resultToDisplay;
+        }
+
+        protected void onPostExecute(String result) {
+            Log.d("RESULT", result);
+        }
+
+
+
+    } // end CallAPI
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
+
 }

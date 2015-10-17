@@ -4,7 +4,12 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +17,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault" >
+
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="HereMapService"
+            android:process="global.Here.Map.Service.v2"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.here.android.mpa.service.MapService" >
+                </action>
+            </intent-filter>
+        </service>
+
         <uses-library
             android:name="com.google.android.wearable"
             android:required="false" />
@@ -20,12 +37,27 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.DeviceDefault.Light" >
+
+        </activity>
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.here.android.maps.appid"
+            android:value="6SOsUkmiX5sFFdanHHcn" />
+        <meta-data
+            android:name="com.here.android.maps.apptoken"
+            android:value="WmW99ZUB2zsUNJyPtP3xLA" />
+        <meta-data
+            android:name="com.here.android.maps.license.key"
+            android:value="TtTlIpZuQMGveiAeH5XJJLeRbnwYXoh4q011LnhqTAGRxVAl1qtfG2uJxvkUq0Ii1oJLnI8NUeqEY3wcA5DgrO/k8QAzczLW+T5YTr4FFc+C1bzZ0f9uiyXNKMlkArgQnEfFIhxOQ8R5rIvHrOwKiMqj2veNt7tjj7yGBenIj1Xu/cWJCLPvu8eLZLZFRJpMf8OuSTacZCeRbtbWq3m1bL6mIA14xGyeudVdM8jbjII8AeADwTsdVhf9zFmlOMH8C08BAh8bRKZA+eT1dqxE9Fae3MfwIqFJge8RPugPuzDJvRCtA2y1Y8jssY5pVrSvdekaEhOeZU0qZWzrEq8aG1ivXnImWBFfFn0iNUnmsWUWLHwhuDfRbARzSvt0GVV7VA7rFLEcahaKWwFj9V2ODF0pG3uaf3cQ88VmkJc3CnFTOn4JoKoprHZaWFFhtdoDqn8VDIi+VUmvoRqFAJUH4aDVEo7sx+lq3ik2ftX/UfEwvCBLZHordUR3RYXUaZ90UOOFdglmHhJVIaarv/mGTkQKz4ZOKNiUM4iZrJU1ERPJGImBi5TmxwvWssS+Au4LKnRNvwLPu+bchff7b5P7XljCtMfk5402ZlDR69cy2d6WGLfXYSOYcmr30UOX+ffdNgvlrerYjOaA0YxqRNpOcp/NZ+4Dz1K9o35xwnrVUlU=" />
     </application>
 
 </manifest>
