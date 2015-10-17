@@ -16,6 +16,7 @@ import com.here.android.mpa.common.Image;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapFragment;
+import com.here.android.mpa.mapping.MapLabeledMarker;
 import com.here.android.mpa.mapping.MapMarker;
 
 
@@ -29,6 +30,9 @@ public class MapActivity extends Activity {
 
 
     private MapMarker marker = null;
+    private MapLabeledMarker labeledMarker = null;
+
+    private int markerCounter = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +52,32 @@ public class MapActivity extends Activity {
                     map = mapFragment.getMap();
 
                     GeoCoordinate geo = new GeoCoordinate(52.520007, 13.404954);
+                    GeoCoordinate geo2 = new GeoCoordinate(53.520007, 11.404954);
                     Image img = new Image();
-                    Drawable drawable = getResources().getDrawable(R.mipmap.twitter);
+
+                    Drawable drawable = getResources().getDrawable(R.mipmap.twitter);;
+
+                    if(markerCounter > 10) {
+                        drawable = getResources().getDrawable(R.mipmap.twitter);
+                    }else if(markerCounter > 30){
+                        drawable = getResources().getDrawable(R.mipmap.twitter);
+                    }else if(markerCounter > 50){
+                        drawable = getResources().getDrawable(R.mipmap.twitter);
+                    }else if(markerCounter > 100){
+                        drawable = getResources().getDrawable(R.mipmap.twitter);
+                    }
+
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-
+                    Textma
                     marker = new MapMarker(geo, img);
+                    marker.addOnClickListener("onclick", new View.OnClickListener(){
+
+                    });
 
                     map.addMapObject(marker);
+
                     // Set the map center to the Berlin regio^n (no animation)
                     map.setCenter(geo, Map.Animation.NONE);
                     // Set the zoom level to the average between min and max
