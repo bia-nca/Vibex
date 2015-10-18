@@ -34,6 +34,13 @@
                 android:id="@+id/imageView3"
                 android:background="@drawable/berlin_tv_tower" />
 
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton"
+                android:layout_centerInParent="true"
+                android:background="@drawable/play_button" />
+
         </RelativeLayout>
 
         <LinearLayout
