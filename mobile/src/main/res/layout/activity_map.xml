@@ -37,14 +37,14 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView"
+                android:id="@+id/berlinImg"
                 android:layout_weight="1"
                 android:background="@drawable/berlin_tv_tower" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView2"
+                android:id="@+id/potsdamImg"
                 android:layout_weight="1"
                 android:background="@drawable/potsdam_sanssouci_small"
                 android:adjustViewBounds="false" />

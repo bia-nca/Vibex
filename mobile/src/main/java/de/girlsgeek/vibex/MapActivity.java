@@ -1,6 +1,7 @@
 package de.girlsgeek.vibex;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.Image;
@@ -35,6 +37,21 @@ public class MapActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        ImageView berlinImg = (ImageView) findViewById(R.id.berlinImg);
+        ImageView potsdamImg = (ImageView) findViewById(R.id.potsdamImg);
+
+        View.OnClickListener picClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), VibexActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        berlinImg.setOnClickListener(picClickListener);
+        potsdamImg.setOnClickListener(picClickListener);
+
+
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment)getFragmentManager().findFragmentById(
                 R.id.mapfragment);
@@ -57,7 +74,7 @@ public class MapActivity extends Activity {
                     marker = new MapMarker(geo, img);
 
                     map.addMapObject(marker);
-                    // Set the map center to the Berlin regio^n (no animation)
+                    // Set the map center to the Berlin region (no animation)
                     map.setCenter(geo, Map.Animation.NONE);
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
@@ -67,6 +84,9 @@ public class MapActivity extends Activity {
                 }
             }
         });
+
+
+
     }
 
 }
