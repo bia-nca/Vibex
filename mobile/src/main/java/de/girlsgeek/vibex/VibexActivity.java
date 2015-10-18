@@ -28,10 +28,6 @@ import java.util.List;
 
 public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener {
 
-    private MediaPlayer mp;
-    private boolean playerIsReady = false;
-    private boolean playerHasTrack = false;
-
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
     final String GET_EVENTS_CALL = "getEvents";
@@ -48,21 +44,45 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     boolean instantPlay = false;
     boolean isPlaying = false;
     boolean wasStopped = false;
-
     ImageButton buttonPlay;
     ImageButton buttonPause;
-
     String[] trackInfo;
+    private MediaPlayer mp;
+    private boolean playerIsReady = false;
+    private boolean playerHasTrack = false;
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vibex);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         city = getIntent().getExtras().getString("city");
         Log.d("CITY", "STADT: " + city);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.back_button);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle(city);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
 
         buttonPlay = (ImageButton) findViewById(R.id.play);
         buttonPause = (ImageButton) findViewById(R.id.pause);
@@ -138,7 +158,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         startEventfulRequest();
     }
 
-
     @Override
     public void onPrepared(MediaPlayer mp) {
         wasStopped = false;
@@ -179,6 +198,33 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         playerIsReady = false;
         wasStopped = true;
         mp.stop();
+    }
+
+
+//    Start API Calls
+
+    private void sendToPlayer(String url){
+        Log.d("TRACK URL: ", url);
+        try{
+            if(playerHasTrack){
+                mp.reset();
+            }
+            mp.setDataSource(url + "?client_id=" + CLIENT_ID);
+
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        playerHasTrack = true;
+        mp.prepareAsync();
+    }
+
+    private void resetArtistSongText(String artist, String track){
+        TextView artistSong = (TextView) findViewById(R.id.artistSong);
+        artistSong.setText(artist + " - " + track);
     }
 
     private class CallAPI extends AsyncTask<String, String, String> {
@@ -251,17 +297,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         }
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
 
     private void fetchUserIDs(String result) throws JSONException {
         // get List of user ids out of SoundCloud API result
@@ -332,11 +367,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         resetArtistSongText(artist, title);
         playerHasTrack = true;
         mp.prepareAsync();
-    }
-
-    private void resetArtistSongText(String artist, String track){
-        TextView artistSong = (TextView) findViewById(R.id.artistSong);
-        artistSong.setText(artist + " - " + track);
     }
 
 
