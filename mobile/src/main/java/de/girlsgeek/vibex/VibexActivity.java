@@ -31,7 +31,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
     final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
-    final String CITY = "Berlin";
     final int LIMIT = 20;
 
     String city = "berlin";
@@ -226,7 +225,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     }
 
     private void startUserByCityCall(){
-        String cityUserListCall = "http://api.soundcloud.com/users?q=" + CITY + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
+        String cityUserListCall = "http://api.soundcloud.com/users?q=" + city + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
         new CallAPI().execute(cityUserListCall, GET_USERS_BY_CITY_CALL);
     }
 

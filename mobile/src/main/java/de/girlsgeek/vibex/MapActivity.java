@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,7 +53,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), VibexActivity.class);
                 if(v.getId() == R.id.berlinImg){
-                    intent.putExtra("city", "Berlin");
+                    intent.putExtra("city", "Oranienburg");
                 } else if(v.getId() == R.id.potsdamImg){
                     intent.putExtra("city", "Potsdam");
                 }
@@ -151,14 +150,13 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
-                            (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
+                            (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2.15);
 
                 } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
                 }
             }
         });
-
 
     }
 
