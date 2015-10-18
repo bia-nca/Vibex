@@ -69,22 +69,6 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapfragment);
 
-        /*mapFragment.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                System.out.println("setOnTouchListener " + v.getContext().getClass().toString() + event.toString());
-
-                MapObject mapObject = (MapObject) v;
-                if (v instanceof
-
-                if (mapObject.getType() == MapObject.Type.MARKER) {
-                    )
-
-                return true;
-            }
-        });*/
-
         final MapGesture.OnGestureListener listener = new MapGesture.OnGestureListener.OnGestureListenerAdapter(){
             @Override
             public boolean onMapObjectsSelected(List<ViewObject> objects){
