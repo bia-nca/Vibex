@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -137,6 +138,22 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         String[] locations = new String[]{"O2 World", "Brunnen70", "BERGHAIN/PANORAMA BAR", "CZAR HAGESTOLZ OPEN AIR", "60Hz Berlin"};
         String[] urls = new String[]{"http://berlin.eventful.com/events/unheilig-/E0-001-079518031-9?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/events/indecks-brunnen70-/E0-001-087898367-3?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/events/clekclekboom-berghainpanorama-bar-/E0-001-087472373-6?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/venues/czar-hagestolz-open-air-/V0-001-008166680-4?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/events/nana-k-motion-w-mantu-get-physical-dayne-s-exp-/E0-001-086018654-9?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic"};
         list.setAdapter(new EventListAdapter(this, names, locations, urls));
+
+        changeCityBg();
+
+    }
+
+    private void changeCityBg(){
+        ImageView bgView = (ImageView) findViewById(R.id.citybg);
+        int bgRes = R.drawable.berlin_tv_tower;
+
+        if(city.toLowerCase().equals("oranienburg")){
+            bgRes = R.drawable.oranienburg_small;
+        } else if(city.toLowerCase().equals("potsdam")){
+            bgRes = R.drawable.potsdam_sanssouci_small;
+        }
+
+        bgView.setBackgroundResource(bgRes);
 
     }
 

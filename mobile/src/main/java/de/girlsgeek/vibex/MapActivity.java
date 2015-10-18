@@ -120,11 +120,10 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     Drawable drawable = getResources().getDrawable(R.drawable.loc_picker);
                     Drawable drawablebig = getResources().getDrawable(R.drawable.loc_picker_big);
 
-
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-                    Bitmap bitmapbig = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap bitmapbig = ((BitmapDrawable) drawablebig).getBitmap();
                     imgbig.setBitmap(bitmapbig);
 
                     marker = new MapMarker(geo_1, imgbig);
