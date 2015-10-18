@@ -29,7 +29,6 @@ package de.girlsgeek.vibex;
         import com.here.android.mpa.mapping.MapObject;
         import com.here.android.mpa.mapping.OnMapRenderListener;
 
-
         import java.util.List;
 
 
@@ -41,7 +40,6 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
-
 
     private MapMarker marker = null;
 
@@ -80,7 +78,9 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
 
+                    //Berlin
                     GeoCoordinate geo = new GeoCoordinate(52.520007, 13.404954);
+
                     Image img = new Image();
                     Drawable drawable = getResources().getDrawable(R.mipmap.twitter);
 
@@ -97,19 +97,15 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-
                     marker = new MapMarker(geo, img);
                     marker.setTitle("Berlin");
-
-                    
                     map.addMapObject(marker);
 
                     // Set the map center to the Berlin regio^n (no animation)
                     map.setCenter(geo,Map.Animation.NONE);
 
                     // Set the zoom level to the average between min and max
-                    map.setZoomLevel(
-                            (map.getMaxZoomLevel()+map.getMinZoomLevel())/2);
+                    map.setZoomLevel( (map.getMaxZoomLevel()+map.getMinZoomLevel()) / 2 );
 
 
                 }else {
