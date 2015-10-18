@@ -66,6 +66,18 @@
                 android:layout_toLeftOf="@+id/play"
                 android:layout_marginRight="35px" />
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@+id/artistSong"
+                android:background="@color/colorGreyOpacity"
+                android:autoText="false"
+                android:textColor="@color/colorGrey"
+                android:textSize="28sp"
+                android:layout_marginTop="5dp" />
+
         </RelativeLayout>
 
         <LinearLayout
