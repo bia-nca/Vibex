@@ -1,11 +1,13 @@
 package de.girlsgeek.vibex;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +38,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
     private MapMarker marker = null;
 
     private int markerCounter = 10;
+    private GeoCoordinate geo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,9 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
 
-                    GeoCoordinate geo = new GeoCoordinate(52.520007, 13.404954);
+                    GeoCoordinate geo_1 = new GeoCoordinate(52.53, 13.38);
+                    GeoCoordinate geo_2 = new GeoCoordinate(52.396070, 13.057117);
+                    GeoCoordinate geo_3 = new GeoCoordinate(52.748615, 13.251458);
                     Image img = new Image();
                     Drawable drawable = getResources().getDrawable(R.drawable.loc_picker);
 
@@ -78,13 +83,20 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-                    marker = new MapMarker(geo, img);
+                    marker = new MapMarker(geo_1, img);
                     marker.setTitle("Berlin");
+                    map.addMapObject(marker);
 
+                    marker = new MapMarker(geo_2, img);
+                    marker.setTitle("Potsdam");
+                    map.addMapObject(marker);
+
+                    marker = new MapMarker(geo_3, img);
+                    marker.setTitle("Oranienburg");
                     map.addMapObject(marker);
 
                     // Set the map center to the Berlin region (no animation)
-                    map.setCenter(geo, Map.Animation.NONE);
+                    map.setCenter(geo_1, Map.Animation.NONE);
 
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
