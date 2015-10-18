@@ -47,15 +47,18 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
         ImageView berlinImg = (ImageView) findViewById(R.id.berlinImg);
         ImageView potsdamImg = (ImageView) findViewById(R.id.potsdamImg);
+        ImageView oranienImg = (ImageView) findViewById(R.id.oranienImg);
 
         View.OnClickListener picClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), VibexActivity.class);
                 if(v.getId() == R.id.berlinImg){
-                    intent.putExtra("city", "Oranienburg");
+                    intent.putExtra("city", "Berlin");
                 } else if(v.getId() == R.id.potsdamImg){
                     intent.putExtra("city", "Potsdam");
+                } else if(v.getId() == R.id.oranienImg){
+                    intent.putExtra("city", "Oranienburg");
                 }
                 startActivity(intent);
             }
@@ -63,6 +66,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
         berlinImg.setOnClickListener(picClickListener);
         potsdamImg.setOnClickListener(picClickListener);
+        oranienImg.setOnClickListener(picClickListener);
 
 
         // Search for the map fragment to finish setup by calling init().
@@ -111,13 +115,19 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     GeoCoordinate geo_2 = new GeoCoordinate(52.396070, 13.057117);
                     GeoCoordinate geo_3 = new GeoCoordinate(52.748615, 13.251458);
                     Image img = new Image();
+                    Image imgbig = new Image();
+
                     Drawable drawable = getResources().getDrawable(R.drawable.loc_picker);
+                    Drawable drawablebig = getResources().getDrawable(R.drawable.loc_picker_big);
 
 
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-                    marker = new MapMarker(geo_1, img);
+                    Bitmap bitmapbig = ((BitmapDrawable) drawable).getBitmap();
+                    imgbig.setBitmap(bitmapbig);
+
+                    marker = new MapMarker(geo_1, imgbig);
                     marker.setTitle("Berlin");
                     map.addMapObject(marker);
 
