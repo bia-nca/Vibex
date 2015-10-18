@@ -15,8 +15,7 @@
         android:textColor="#351c75"
         android:typeface="sans"
         android:textSize="15dip"
-        android:textStyle="bold"
-        android:layout_toLeftOf="@+id/list_image" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/place"

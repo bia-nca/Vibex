@@ -32,25 +32,54 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="2"
-            android:background="@color/colorGrey">
+            android:weightSum="2">
 
-            <ImageView
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/berlinImg"
-                android:layout_weight="1"
-                android:background="@drawable/berlin_tv_tower"
-                android:layout_margin="4dp" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <ImageView
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/berlinImg"
+                    android:layout_weight="1"
+                    android:background="@drawable/berlin_tv_tower" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Berlin"
+                    android:id="@+id/textView"
+                    android:background="@color/colorGreyOpacity"
+                    android:textColor="@android:color/white"
+                    android:textSize="16dp"
+                    android:layout_alignBottom="@+id/berlinImg" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/potsdamImg"
-                android:layout_weight="1"
-                android:background="@drawable/potsdam_sanssouci_small"
-                android:adjustViewBounds="false"
-                android:layout_margin="4dp" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/potsdamImg"
+                    android:layout_weight="1"
+                    android:background="@drawable/potsdam_sanssouci_small"
+                    android:adjustViewBounds="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Potsdam"
+                    android:id="@+id/textView2"
+                    android:textSize="16dp"
+                    android:textColor="@android:color/white"
+                    android:background="@color/colorGreyOpacity"
+                    android:layout_alignBottom="@+id/potsdamImg" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
