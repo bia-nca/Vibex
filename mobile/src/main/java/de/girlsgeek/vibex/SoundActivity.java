@@ -25,9 +25,9 @@ public class SoundActivity extends AppCompatActivity {
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
 
-    String clientId = "0b0263b59a2c75be631fecf6c8c95dd1";
-    String city = "berlin";
-    int limit = 20;
+    final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
+    final String CITY = "berlin";
+    final int LIMIT = 20;
 
     List userIDs;
     List userTrackList;
@@ -65,10 +65,14 @@ public class SoundActivity extends AppCompatActivity {
                 Log.d("PARSED", parsedResult);
 
                 if(callType.equals(GET_USERS_BY_CITY_CALL)){
+                    // reset tracklist
+                    userTrackList = new ArrayList();
+
+                    // get city results
                     fetchUserIDs(parsedResult);
                 }
                 else if(callType.equals(GET_TRACKS_CALL)){
-                    fetchTracksURLS(parsedResult);
+                    fetchTrackURLS(parsedResult);
                 }
 
             } catch (Exception e ) {
@@ -81,12 +85,18 @@ public class SoundActivity extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
             if(callType.equals(GET_USERS_BY_CITY_CALL) && userIDs != null){
+
                 startTrackRequest((int)userIDs.remove(0));
+
             }
             else if(callType.equals(GET_TRACKS_CALL) && userTrackList != null){
                 for (int i = 0; i < userTrackList.size(); i++) {
                     Log.d("SONG URLS", "URL: " + userTrackList.get(i));
 
+                }
+
+                if(userTrackList.size() < LIMIT){
+                    startTrackRequest((int)userIDs.remove(0));
                 }
             }
         }
@@ -120,14 +130,12 @@ public class SoundActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchTracksURLS(String result) throws JSONException {
-        // get List of track urls out of SoundCloud API result
-        userTrackList = new ArrayList();
-
+    private void fetchTrackURLS(String result) throws JSONException {
+        // add track url out of SoundCloud API result to userTrackList
         JSONArray jsonArray = new JSONArray(result);
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject userObject = jsonArray.getJSONObject(i);
+        if(jsonArray.length()>0){
+            JSONObject userObject = jsonArray.getJSONObject(0);
             String trackURL = userObject.getString("stream_url");
             userTrackList.add(trackURL);
         }
@@ -136,12 +144,12 @@ public class SoundActivity extends AppCompatActivity {
 //    Start API Calls
 
     private void startUserByCityCall(){
-        String cityUserListCall = "http://api.soundcloud.com/users?q=" + city + "&limit=" + limit + "&client_id=" + clientId;
+        String cityUserListCall = "http://api.soundcloud.com/users?q=" + CITY + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
         new CallAPI().execute(cityUserListCall, GET_USERS_BY_CITY_CALL);
     }
 
     private void startTrackRequest(int userId){
-        String userTrackCall = "http://api.soundcloud.com/tracks?user_id=" + userId + "&client_id=" + clientId;
+        String userTrackCall = "http://api.soundcloud.com/tracks?filter=public&user_id=" + userId + "&client_id=" + CLIENT_ID;
         new CallAPI().execute(userTrackCall, GET_TRACKS_CALL);
     }
 
