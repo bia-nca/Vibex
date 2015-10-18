@@ -24,22 +24,38 @@
         android:layout_below="@+id/toolbar">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageView3"
+                android:id="@+id/citybg"
                 android:background="@drawable/berlin_tv_tower" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton"
+                android:id="@+id/play"
                 android:layout_centerInParent="true"
                 android:background="@drawable/play_button" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/next"
+                android:background="@drawable/next_button"
+                android:layout_toRightOf="@+id/play"
+                android:layout_centerVertical="true" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pause"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/pause_button" />
 
         </RelativeLayout>
 
@@ -50,10 +66,10 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Medium Text7"
+                android:text="Eventful"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -68,8 +84,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/textView2"
+                android:text="News"
+                android:id="@+id/newsText"
                 android:layout_weight="1" />
         </LinearLayout>
 
