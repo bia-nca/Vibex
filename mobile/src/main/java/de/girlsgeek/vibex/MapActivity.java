@@ -1,39 +1,29 @@
 package de.girlsgeek.vibex;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
-        import android.app.Activity;
-        import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.PointF;
-        import android.graphics.drawable.BitmapDrawable;
-        import android.graphics.drawable.Drawable;
-        import android.nfc.Tag;
-        import android.os.Bundle;
-        import android.support.design.widget.FloatingActionButton;
-        import android.support.design.widget.Snackbar;
-        import android.support.v7.app.AppCompatActivity;
-        import android.support.v7.widget.Toolbar;
-        import android.view.View;
-        import android.view.View;
-        import android.widget.ImageView;
+import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.Image;
+import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.common.ViewObject;
+import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapFragment;
+import com.here.android.mpa.mapping.MapGesture;
+import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.MapObject;
 
-        import com.here.android.mpa.common.GeoCoordinate;
-        import com.here.android.mpa.common.Image;
-        import com.here.android.mpa.common.OnEngineInitListener;
-        import com.here.android.mpa.common.ViewObject;
-        import com.here.android.mpa.common.ViewObject.Type;
-        import com.here.android.mpa.mapping.Map;
-        import com.here.android.mpa.mapping.MapFragment;
-        import com.here.android.mpa.mapping.MapGesture;
-        import com.here.android.mpa.mapping.MapMarker;
-        import com.here.android.mpa.mapping.MapObject;
-        import com.here.android.mpa.mapping.OnMapRenderListener;
+import java.util.List;
 
 
-        import java.util.List;
-
-
-public class MapActivity extends Activity implements MapGesture.OnGestureListener,MapMarker.OnDragListener {
+public class MapActivity extends Activity implements MapGesture.OnGestureListener, MapMarker.OnDragListener {
 
 
     // map embedded in the map fragment
@@ -68,7 +58,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
 
         // Search for the map fragment to finish setup by calling init().
-        mapFragment = (MapFragment)getFragmentManager().findFragmentById(
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapfragment);
 
         mapFragment.init(new OnEngineInitListener() {
@@ -82,42 +72,29 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
                     GeoCoordinate geo = new GeoCoordinate(52.520007, 13.404954);
                     Image img = new Image();
-                    Drawable drawable = getResources().getDrawable(R.mipmap.twitter);
+                    Drawable drawable = getResources().getDrawable(R.drawable.loc_picker);
 
-                    if(markerCounter > 10) {
-                        drawable = getResources().getDrawable(R.mipmap.twitter);
-                    }else if(markerCounter > 30){
-                        drawable = getResources().getDrawable(R.mipmap.twitter);
-                    }else if(markerCounter > 50){
-                        drawable = getResources().getDrawable(R.mipmap.twitter);
-                    }else if(markerCounter > 100){
-                        drawable = getResources().getDrawable(R.mipmap.twitter);
-                    }
 
                     Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                     img.setBitmap(bitmap);
 
-
                     marker = new MapMarker(geo, img);
                     marker.setTitle("Berlin");
 
-                    
                     map.addMapObject(marker);
 
-                    // Set the map center to the Berlin regio^n (no animation)
-                    map.setCenter(geo,Map.Animation.NONE);
+                    // Set the map center to the Berlin region (no animation)
+                    map.setCenter(geo, Map.Animation.NONE);
 
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
-                            (map.getMaxZoomLevel()+map.getMinZoomLevel())/2);
+                            (map.getMaxZoomLevel() + map.getMinZoomLevel()) / 2);
 
-
-                }else {
+                } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
                 }
             }
         });
-
 
 
     }
@@ -154,7 +131,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                 if (mapObject.getType() == MapObject.Type.MARKER) {
                     System.out.println("onMapObjectsSelected Marker");
                     MapMarker marker = (MapMarker) mapObject;
-                    if(marker != null){
+                    if (marker != null) {
                         marker.showInfoBubble();
                     }
                     return false;
@@ -217,7 +194,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
         return false;
     }
 
-    private void callNextActivity(String city){
+    private void callNextActivity(String city) {
         Intent intent = new Intent(this, VibexActivity.class);
         intent.putExtra("city", city);
         startActivity(intent);
