@@ -1,5 +1,6 @@
 package de.girlsgeek.vibex;
 
+
         import android.app.Activity;
         import android.content.Intent;
         import android.graphics.Bitmap;
@@ -13,6 +14,8 @@ package de.girlsgeek.vibex;
         import android.support.v7.app.AppCompatActivity;
         import android.support.v7.widget.Toolbar;
         import android.view.View;
+        import android.view.View;
+        import android.widget.ImageView;
 
         import com.here.android.mpa.common.GeoCoordinate;
         import com.here.android.mpa.common.Image;
@@ -32,6 +35,7 @@ package de.girlsgeek.vibex;
 
 public class MapActivity extends Activity implements MapGesture.OnGestureListener,MapMarker.OnDragListener {
 
+
     // map embedded in the map fragment
     private Map map = null;
 
@@ -47,6 +51,21 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        ImageView berlinImg = (ImageView) findViewById(R.id.berlinImg);
+        ImageView potsdamImg = (ImageView) findViewById(R.id.potsdamImg);
+
+        View.OnClickListener picClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), VibexActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        berlinImg.setOnClickListener(picClickListener);
+        potsdamImg.setOnClickListener(picClickListener);
+
 
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment)getFragmentManager().findFragmentById(
@@ -84,8 +103,10 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
                     
                     map.addMapObject(marker);
+
                     // Set the map center to the Berlin regio^n (no animation)
                     map.setCenter(geo,Map.Animation.NONE);
+
                     // Set the zoom level to the average between min and max
                     map.setZoomLevel(
                             (map.getMaxZoomLevel()+map.getMinZoomLevel())/2);
@@ -96,6 +117,9 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                 }
             }
         });
+
+
+
     }
 
     @Override
@@ -194,7 +218,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
     }
 
     private void callNextActivity(String city){
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, VibexActivity.class);
         intent.putExtra("city", city);
         startActivity(intent);
     }
