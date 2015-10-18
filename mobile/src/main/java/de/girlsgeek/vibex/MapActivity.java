@@ -47,6 +47,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
         ImageView berlinImg = (ImageView) findViewById(R.id.berlinImg);
         ImageView potsdamImg = (ImageView) findViewById(R.id.potsdamImg);
+        ImageView oranienImg = (ImageView) findViewById(R.id.oranienImg);
 
         View.OnClickListener picClickListener = new View.OnClickListener() {
             @Override
@@ -56,6 +57,8 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     intent.putExtra("city", "Oranienburg");
                 } else if(v.getId() == R.id.potsdamImg){
                     intent.putExtra("city", "Potsdam");
+                } else if(v.getId() == R.id.oranienImg){
+                    intent.putExtra("city", "Oranienburg");
                 }
                 startActivity(intent);
             }
@@ -63,27 +66,12 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
 
         berlinImg.setOnClickListener(picClickListener);
         potsdamImg.setOnClickListener(picClickListener);
+        oranienImg.setOnClickListener(picClickListener);
 
 
         // Search for the map fragment to finish setup by calling init().
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapfragment);
-
-        /*mapFragment.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                System.out.println("setOnTouchListener " + v.getContext().getClass().toString() + event.toString());
-
-                MapObject mapObject = (MapObject) v;
-                if (v instanceof
-
-                if (mapObject.getType() == MapObject.Type.MARKER) {
-                    )
-
-                return true;
-            }
-        });*/
 
         final MapGesture.OnGestureListener listener = new MapGesture.OnGestureListener.OnGestureListenerAdapter(){
             @Override
