@@ -5,10 +5,11 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,8 +28,6 @@ import java.util.List;
 public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener {
 
     private MediaPlayer mp;
-    private String audioSource; // get the audio source from an intent
-    private MediaPlayer.TrackInfo trackInfo[];
     private boolean playerIsReady = false;
     private boolean playerHasTrack = false;
 
@@ -42,6 +41,15 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     List userIDs;
     List userTrackList;
     String callType;
+    int currentTrack = 0;
+    boolean instantPlay = false;
+    boolean isPlaying = false;
+    boolean wasStopped = false;
+
+    ImageButton buttonPlay;
+    ImageButton buttonPause;
+
+    String[] trackInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,47 +58,109 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final AppCompatImageButton buttonPlay = (AppCompatImageButton) findViewById(R.id.play);
-        final AppCompatImageButton buttonNext = (AppCompatImageButton) findViewById(R.id.next);
+        buttonPlay = (ImageButton) findViewById(R.id.play);
+        buttonPause = (ImageButton) findViewById(R.id.pause);
+        final ImageButton buttonStop = (ImageButton) findViewById(R.id.stop);
+        final ImageButton buttonNext = (ImageButton) findViewById(R.id.next);
+        buttonPause.setVisibility(View.INVISIBLE);
 
-        buttonPlay.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener playpauseListener = new View.OnClickListener() {
             public void onClick(View v) {
-
-                if(playerIsReady){
-                    if(mp.isPlaying()) {
-                        mp.pause();
+                Log.d("TAG", "button");
+                if (playerIsReady) {
+                    if (isPlaying) {
+                        pauseSound();
                     } else {
-                        mp.start();
+                        playSound();
                     }
+                } else if(wasStopped){
+                    playSound();
+                }
+            }
+        };
+
+        buttonPlay.setOnClickListener(playpauseListener);
+        buttonPause.setOnClickListener(playpauseListener);
+
+        buttonStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (isPlaying) {
+                    stopSound();
                 }
             }
         });
 
         buttonNext.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Perform action on click
-                for (MediaPlayer.TrackInfo info : trackInfo) {
-                    System.out.println(info.toString());
+
+                playerIsReady = false;
+                instantPlay = true;
+                currentTrack++;
+
+                // RESET currentTrackNr if larger than Tracklist
+                if (currentTrack == userTrackList.size()) {
+                    currentTrack = 0;
                 }
+
+                trackInfo = (String[]) userTrackList.get(currentTrack);
+                sendToPlayer(trackInfo[0]);
             }
         });
+    }
 
+    @Override
+    public void onStart(){
+        super.onStart();
 
         mp = new MediaPlayer();
 
         mp.setOnPreparedListener(this);
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-
         startUserByCityCall();
-
     }
 
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.d("PLAYER", "IS READY!!!!");
+        wasStopped = false;
         playerIsReady = true;
+        Log.d("TAG", "on Prepared!");
+
+        if(instantPlay){
+            playSound();
+            instantPlay = false;
+        }
+    }
+
+    private void playSound(){
+        buttonPause.setVisibility(View.VISIBLE);
+        buttonPlay.setVisibility(View.INVISIBLE);
+        isPlaying = true;
+        if(wasStopped){
+            instantPlay = true;
+            mp.prepareAsync();
+
+        } else {
+            resetArtistSongText(trackInfo[1], trackInfo[2]);
+            mp.start();
+        }
+    }
+
+    private void pauseSound(){
+        buttonPlay.setVisibility(View.VISIBLE);
+        buttonPause.setVisibility(View.INVISIBLE);
+        isPlaying = false;
+        mp.pause();
+    }
+
+    private void stopSound(){
+        buttonPlay.setVisibility(View.VISIBLE);
+        buttonPause.setVisibility(View.INVISIBLE);
+        isPlaying = false;
+        playerIsReady = false;
+        wasStopped = true;
+        mp.stop();
     }
 
     private class CallAPI extends AsyncTask<String, String, String> {
@@ -115,7 +185,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
                 if(callType.equals(GET_USERS_BY_CITY_CALL)){
                     // reset tracklist
-                    userTrackList = new ArrayList();
+                    userTrackList = new ArrayList<String[]>();
 
                     // get city results
                     fetchUserIDs(parsedResult);
@@ -144,7 +214,10 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
                 // SEND TO PLAYER ONCE
                 if(userTrackList.size() > 0 && !playerHasTrack){
-                    String userTrack = userTrackList.remove(0).toString();
+
+                    trackInfo = (String[]) userTrackList.get(0);
+
+                    String userTrack = trackInfo[0];
                     Log.d("SONG URLS", "URL: " + userTrack);
                     sendToPlayer(userTrack);
                 }
@@ -153,13 +226,9 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
                 if(userTrackList.size() < LIMIT && userIDs.size() > 0){
                     startTrackRequest((int)userIDs.remove(0));
                 }
-
             }
         }
-
-
-
-    } // end CallAPI
+    }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
@@ -193,7 +262,12 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         if(jsonArray.length()>0){
             JSONObject userObject = jsonArray.getJSONObject(0);
             String trackURL = userObject.getString("stream_url");
-            userTrackList.add(trackURL);
+            JSONObject user = userObject.getJSONObject("user");
+            String username = user.getString("username");
+            String title = userObject.getString("title");
+            String[] track = new String[]{trackURL, username, title};
+
+            userTrackList.add(track);
         }
     }
 
@@ -212,8 +286,11 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     private void sendToPlayer(String url){
         Log.d("TRACK URL: ", url);
         try{
+            if(playerHasTrack){
+                mp.reset();
+            }
             mp.setDataSource(url + "?client_id=" + CLIENT_ID);
-            trackInfo = mp.getTrackInfo();
+
         } catch (IllegalArgumentException e){
             e.printStackTrace();
 
@@ -223,6 +300,11 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
         playerHasTrack = true;
         mp.prepareAsync();
+    }
+
+    private void resetArtistSongText(String artist, String track){
+        TextView artistSong = (TextView) findViewById(R.id.artistSong);
+        artistSong.setText(artist + " - " + track);
     }
 
 
