@@ -30,7 +30,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
     final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
-    final String CITY = "berlin";
+    final String CITY = "Berlin";
     final int LIMIT = 20;
     List userIDs;
     List userTrackList;
@@ -66,9 +66,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.back_button);
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle(CITY);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
