@@ -160,7 +160,6 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
         });
 
 
-
     }
 
     @Override

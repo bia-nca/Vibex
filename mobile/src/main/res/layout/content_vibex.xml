@@ -26,6 +26,7 @@
         android:weightSum="2"
         android:layout_below="@+id/toolbar">
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -42,13 +43,13 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/play"
                 android:layout_centerInParent="true"
-                android:background="@drawable/play_button" />
+                android:background="@drawable/play_button_custom" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/next"
-                android:background="@drawable/next_button"
+                android:background="@drawable/next_button_custom"
                 android:layout_toRightOf="@+id/play"
                 android:layout_centerVertical="true" />
 
@@ -58,14 +59,14 @@
                 android:id="@+id/pause"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/pause_button" />
+                android:background="@drawable/pause_button_custom" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/stop"
                 android:layout_centerVertical="true"
-                android:background="@drawable/stop_button"
+                android:background="@drawable/stop_button_custom"
                 android:layout_toLeftOf="@+id/play"
                 android:layout_marginRight="40px" />
 
