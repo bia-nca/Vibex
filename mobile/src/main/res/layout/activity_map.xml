@@ -32,14 +32,16 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="2">
+            android:weightSum="2"
+            android:background="@color/colorGrey">
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/berlinImg"
                 android:layout_weight="1"
-                android:background="@drawable/berlin_tv_tower" />
+                android:background="@drawable/berlin_tv_tower"
+                android:layout_margin="4dp" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -47,7 +49,8 @@
                 android:id="@+id/potsdamImg"
                 android:layout_weight="1"
                 android:background="@drawable/potsdam_sanssouci_small"
-                android:adjustViewBounds="false" />
+                android:adjustViewBounds="false"
+                android:layout_margin="4dp" />
         </LinearLayout>
     </LinearLayout>
 

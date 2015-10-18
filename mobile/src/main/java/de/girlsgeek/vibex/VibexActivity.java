@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -33,10 +34,12 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
+    final String GET_EVENTS_CALL = "getEvents";
 
     final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
-    final String CITY = "berlin";
     final int LIMIT = 20;
+
+    String city = "berlin";
 
     List userIDs;
     List userTrackList;
@@ -57,6 +60,9 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         setContentView(R.layout.activity_vibex);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        city = getIntent().getExtras().getString("city");
+        Log.d("CITY", "STADT: " + city);
 
         buttonPlay = (ImageButton) findViewById(R.id.play);
         buttonPause = (ImageButton) findViewById(R.id.pause);
@@ -103,9 +109,18 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
                 }
 
                 trackInfo = (String[]) userTrackList.get(currentTrack);
-                sendToPlayer(trackInfo[0]);
+                sendToPlayer(trackInfo);
             }
         });
+
+        // LISTVIEW
+
+        ListView list = (ListView) findViewById(R.id.listView);
+        String[] names = new String[]{"Unheilig", "Indecks at Brunnen70", "Clekclekboom at Berghain/Panorama Bar", "THE SAY HIGHS- Adam Fuge- Vanterra- Bastian Bandt"};
+        String[] locations = new String[]{"O2 World", "Brunnen70", "BERGHAIN/PANORAMA BAR", "CZAR HAGESTOLZ OPEN AIR"};
+        String[] urls = new String[]{"http://berlin.eventful.com/events/unheilig-/E0-001-079518031-9?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/events/indecks-brunnen70-/E0-001-087898367-3?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/events/clekclekboom-berghainpanorama-bar-/E0-001-087472373-6?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic", "http://berlin.eventful.com/venues/czar-hagestolz-open-air-/V0-001-008166680-4?utm_source=apis&amp;utm_medium=apim&amp;utm_campaign=apic"};
+        list.setAdapter(new EventListAdapter(this, names, locations, urls));
+
     }
 
     @Override
@@ -118,6 +133,9 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         startUserByCityCall();
+
+        // Eventful API
+        startEventfulRequest();
     }
 
 
@@ -185,13 +203,17 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
                 if(callType.equals(GET_USERS_BY_CITY_CALL)){
                     // reset tracklist
-                    userTrackList = new ArrayList<String[]>();
+                    userTrackList = new ArrayList<>();
 
                     // get city results
                     fetchUserIDs(parsedResult);
                 }
                 else if(callType.equals(GET_TRACKS_CALL)){
                     fetchTrackURLS(parsedResult);
+                }
+                else if(callType.equals(GET_EVENTS_CALL)){
+                    JSONArray jarray = SimpleXmlPull.getJSONArrayFromXML(parsedResult);
+                    Log.d("JSON ARRAY", jarray.toString());
                 }
 
             } catch (Exception e ) {
@@ -217,9 +239,8 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 
                     trackInfo = (String[]) userTrackList.get(0);
 
-                    String userTrack = trackInfo[0];
-                    Log.d("SONG URLS", "URL: " + userTrack);
-                    sendToPlayer(userTrack);
+                    Log.d("SONG URLS", "URL: " + trackInfo[0]);
+                    sendToPlayer(trackInfo);
                 }
 
                 // GET NEW TRACKS
@@ -274,7 +295,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
 //    Start API Calls
 
     private void startUserByCityCall(){
-        String cityUserListCall = "http://api.soundcloud.com/users?q=" + CITY + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
+        String cityUserListCall = "http://api.soundcloud.com/users?q=" + city + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
         new CallAPI().execute(cityUserListCall, GET_USERS_BY_CITY_CALL);
     }
 
@@ -283,7 +304,17 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         new CallAPI().execute(userTrackCall, GET_TRACKS_CALL);
     }
 
-    private void sendToPlayer(String url){
+    private void startEventfulRequest(){
+        String userTrackCall = "http://api.eventful.com/rest/events/search?location=berlin&app_key=HMzmVQVFT8BKzDwp&category=music";
+        new CallAPI().execute(userTrackCall, GET_EVENTS_CALL);
+    }
+
+    private void sendToPlayer(String[] track){
+
+        String url = track[0];
+        String artist = track[1];
+        String title = track[2];
+
         Log.d("TRACK URL: ", url);
         try{
             if(playerHasTrack){
@@ -298,6 +329,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
             e.printStackTrace();
         }
 
+        resetArtistSongText(artist, title);
         playerHasTrack = true;
         mp.prepareAsync();
     }

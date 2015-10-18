@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <!--  ListRow right side thumbnail image -->
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#351c75"
+        android:typeface="sans"
+        android:textSize="15dip"
+        android:textStyle="bold"
+        android:layout_toLeftOf="@+id/list_image" />
+
+    <TextView
+        android:id="@+id/place"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:textColor="#343434"
+        android:textSize="10dip"
+        android:layout_marginTop="5dip"
+        android:text="Just gona stand there and ..." />
+
+    <!-- Rightend Duration -->
+
+    <!-- Rightend Arrow -->
+
+    <ImageView
+        android:id="@+id/list_image"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ticket_icon"
+        android:layout_margin="10dp" />
+
+</RelativeLayout>

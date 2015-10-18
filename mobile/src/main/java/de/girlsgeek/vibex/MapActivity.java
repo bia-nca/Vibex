@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -21,6 +22,9 @@ import com.here.android.mpa.mapping.MapFragment;
 import com.here.android.mpa.mapping.MapGesture;
 import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.MapObject;
+
+import org.json.JSONArray;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.List;
 
@@ -52,6 +56,11 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), VibexActivity.class);
+                if(v.getId() == R.id.berlinImg){
+                    intent.putExtra("city", "Oranienburg");
+                } else if(v.getId() == R.id.potsdamImg){
+                    intent.putExtra("city", "Potsdam");
+                }
                 startActivity(intent);
             }
         };
@@ -107,7 +116,6 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                 }
             }
         });
-
 
     }
 
