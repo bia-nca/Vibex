@@ -31,7 +31,7 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
     final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
-    final String CITY = "Berlin";
+    String CITY = "Berlin";
     final int LIMIT = 20;
     List userIDs;
     List userTrackList;
@@ -63,6 +63,9 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vibex);
+
+        CITY = getIntent().getExtras().getString("city");
+
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.back_button);
