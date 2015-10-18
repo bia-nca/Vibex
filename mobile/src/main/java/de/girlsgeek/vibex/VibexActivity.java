@@ -27,17 +27,11 @@ import java.util.List;
 
 public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPreparedListener {
 
-    private MediaPlayer mp;
-    private boolean playerIsReady = false;
-    private boolean playerHasTrack = false;
-
     final String GET_USERS_BY_CITY_CALL = "getUsersByCity";
     final String GET_TRACKS_CALL = "getTracks";
-
     final String CLIENT_ID = "0b0263b59a2c75be631fecf6c8c95dd1";
     final String CITY = "berlin";
     final int LIMIT = 20;
-
     List userIDs;
     List userTrackList;
     String callType;
@@ -45,19 +39,43 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
     boolean instantPlay = false;
     boolean isPlaying = false;
     boolean wasStopped = false;
-
     ImageButton buttonPlay;
     ImageButton buttonPause;
-
     String[] trackInfo;
+    private MediaPlayer mp;
+    private boolean playerIsReady = false;
+    private boolean playerHasTrack = false;
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vibex);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.back_button);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        }
         buttonPlay = (ImageButton) findViewById(R.id.play);
         buttonPause = (ImageButton) findViewById(R.id.pause);
         final ImageButton buttonStop = (ImageButton) findViewById(R.id.stop);
@@ -120,7 +138,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         startUserByCityCall();
     }
 
-
     @Override
     public void onPrepared(MediaPlayer mp) {
         wasStopped = false;
@@ -161,6 +178,71 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
         playerIsReady = false;
         wasStopped = true;
         mp.stop();
+    }
+
+    private void fetchUserIDs(String result) throws JSONException {
+        // get List of user ids out of SoundCloud API result
+        userIDs = new ArrayList();
+
+        JSONArray jsonArray = new JSONArray(result);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject userObject = jsonArray.getJSONObject(i);
+            int userID = userObject.getInt("id");
+            userIDs.add(userID);
+        }
+    }
+
+    private void fetchTrackURLS(String result) throws JSONException {
+        // add track url out of SoundCloud API result to userTrackList
+        JSONArray jsonArray = new JSONArray(result);
+
+        if(jsonArray.length()>0){
+            JSONObject userObject = jsonArray.getJSONObject(0);
+            String trackURL = userObject.getString("stream_url");
+            JSONObject user = userObject.getJSONObject("user");
+            String username = user.getString("username");
+            String title = userObject.getString("title");
+            String[] track = new String[]{trackURL, username, title};
+
+            userTrackList.add(track);
+        }
+    }
+
+    private void startUserByCityCall(){
+        String cityUserListCall = "http://api.soundcloud.com/users?q=" + CITY + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
+        new CallAPI().execute(cityUserListCall, GET_USERS_BY_CITY_CALL);
+    }
+
+//    Start API Calls
+
+    private void startTrackRequest(int userId){
+        String userTrackCall = "http://api.soundcloud.com/tracks?filter=public&user_id=" + userId + "&client_id=" + CLIENT_ID;
+        new CallAPI().execute(userTrackCall, GET_TRACKS_CALL);
+    }
+
+    private void sendToPlayer(String url){
+        Log.d("TRACK URL: ", url);
+        try{
+            if(playerHasTrack){
+                mp.reset();
+            }
+            mp.setDataSource(url + "?client_id=" + CLIENT_ID);
+
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        playerHasTrack = true;
+        mp.prepareAsync();
+    }
+
+    private void resetArtistSongText(String artist, String track){
+        TextView artistSong = (TextView) findViewById(R.id.artistSong);
+        artistSong.setText(artist + " - " + track);
     }
 
     private class CallAPI extends AsyncTask<String, String, String> {
@@ -228,83 +310,6 @@ public class VibexActivity extends AppCompatActivity implements MediaPlayer.OnPr
                 }
             }
         }
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
-
-    private void fetchUserIDs(String result) throws JSONException {
-        // get List of user ids out of SoundCloud API result
-        userIDs = new ArrayList();
-
-        JSONArray jsonArray = new JSONArray(result);
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject userObject = jsonArray.getJSONObject(i);
-            int userID = userObject.getInt("id");
-            userIDs.add(userID);
-        }
-    }
-
-    private void fetchTrackURLS(String result) throws JSONException {
-        // add track url out of SoundCloud API result to userTrackList
-        JSONArray jsonArray = new JSONArray(result);
-
-        if(jsonArray.length()>0){
-            JSONObject userObject = jsonArray.getJSONObject(0);
-            String trackURL = userObject.getString("stream_url");
-            JSONObject user = userObject.getJSONObject("user");
-            String username = user.getString("username");
-            String title = userObject.getString("title");
-            String[] track = new String[]{trackURL, username, title};
-
-            userTrackList.add(track);
-        }
-    }
-
-//    Start API Calls
-
-    private void startUserByCityCall(){
-        String cityUserListCall = "http://api.soundcloud.com/users?q=" + CITY + "&limit=" + LIMIT + "&client_id=" + CLIENT_ID;
-        new CallAPI().execute(cityUserListCall, GET_USERS_BY_CITY_CALL);
-    }
-
-    private void startTrackRequest(int userId){
-        String userTrackCall = "http://api.soundcloud.com/tracks?filter=public&user_id=" + userId + "&client_id=" + CLIENT_ID;
-        new CallAPI().execute(userTrackCall, GET_TRACKS_CALL);
-    }
-
-    private void sendToPlayer(String url){
-        Log.d("TRACK URL: ", url);
-        try{
-            if(playerHasTrack){
-                mp.reset();
-            }
-            mp.setDataSource(url + "?client_id=" + CLIENT_ID);
-
-        } catch (IllegalArgumentException e){
-            e.printStackTrace();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        playerHasTrack = true;
-        mp.prepareAsync();
-    }
-
-    private void resetArtistSongText(String artist, String track){
-        TextView artistSong = (TextView) findViewById(R.id.artistSong);
-        artistSong.setText(artist + " - " + track);
     }
 
 
