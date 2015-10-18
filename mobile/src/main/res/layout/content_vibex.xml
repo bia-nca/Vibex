@@ -8,13 +8,13 @@
     tools:showIn="@layout/activity_vibex" tools:context="de.girlsgeek.vibex.VibexActivity">
 
     <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorGrey"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
         app:navigationIcon="@drawable/logo"
         app:contentInsetEnd="@dimen/activity_horizontal_margin"
         app:contentInsetStart="@dimen/activity_horizontal_margin"
-        />
+        android:background="@color/colorGrey"
+    />
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
