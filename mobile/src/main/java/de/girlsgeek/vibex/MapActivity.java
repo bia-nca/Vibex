@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -69,6 +70,48 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapfragment);
 
+        /*mapFragment.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                System.out.println("setOnTouchListener " + v.getContext().getClass().toString() + event.toString());
+
+                MapObject mapObject = (MapObject) v;
+                if (v instanceof
+
+                if (mapObject.getType() == MapObject.Type.MARKER) {
+                    )
+
+                return true;
+            }
+        });*/
+
+        final MapGesture.OnGestureListener listener = new MapGesture.OnGestureListener.OnGestureListenerAdapter(){
+            @Override
+            public boolean onMapObjectsSelected(List<ViewObject> objects){
+                for (ViewObject viewObject : objects) {
+                    if (viewObject.getBaseType() == ViewObject.Type.USER_OBJECT) {
+                        System.out.println("onMapObjectsSelected Object");
+                        MapObject mapObject = (MapObject) viewObject;
+
+                        if (mapObject.getType() == MapObject.Type.MARKER) {
+                            System.out.println("onMapObjectsSelected Marker");
+                            MapMarker marker = (MapMarker) mapObject;
+
+                            if (marker != null) {
+                                String title = marker.getTitle();
+                                callNextActivity(title);
+                            }
+                            return false;
+                        }
+                    }
+                }
+                return false;
+            }
+        };
+
+
+
         mapFragment.init(new OnEngineInitListener() {
             @Override
             public void onEngineInitializationCompleted(
@@ -77,6 +120,9 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                     // retrieve a reference of the map from the map fragment
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
+
+
+                    mapFragment.getMapGesture().addOnGestureListener(listener);
 
                     GeoCoordinate geo_1 = new GeoCoordinate(52.53, 13.38);
                     GeoCoordinate geo_2 = new GeoCoordinate(52.396070, 13.057117);
@@ -112,6 +158,7 @@ public class MapActivity extends Activity implements MapGesture.OnGestureListene
                 }
             }
         });
+
 
 
     }
